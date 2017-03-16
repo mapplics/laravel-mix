@@ -71,16 +71,24 @@ class Mix {
      * Determine the Webpack output path.
      */
     output() {
+        // Removes the /js root directory when outputting the components
+        //// ORIGINAL: this.js.base || '', (this.options.versioning ? '[name].[chunkhash].js' : '[name].js')
+        // that was becouse the coponents output path was prepend with /js/[chunkFilename]
         let filename = this.options.versioning ? '[name].[chunkhash].js' : '[name].js';
         let chunkFilename = path.join(
-            this.js.base || '', (this.options.versioning ? '[name].[chunkhash].js' : '[name].js')
+            '', (this.options.versioning ? '[name].[chunkhash].js' : '[name].js')
         );
 
+        // We also change the output public path of the components when compiling with webpack
+        // Before, it was outputting in the root directory: eg. localhost/[chuckFilename]
+        //// ORIGINAL: publicPath: this.options.hmr ? 'http://localhost:8080' : ''
+        // Now it outputs in the current directory of the project: eg. localhost/path/to/project/[chuckFilename] 
+        
         return {
             path: this.options.hmr ? '/' : this.options.publicPath,
             filename: filename,
             chunkFilename: chunkFilename,
-            publicPath: this.options.hmr ? 'http://localhost:8080' : ''
+            publicPath: this.options.hmr ? 'http://localhost:8080' : './'
         };
     }
 
